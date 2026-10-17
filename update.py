@@ -30,9 +30,21 @@ def update():
     bands_df["band_pct"] = bands_df["band_pct"].astype(str)
     print(f"      Retrieved price bands for {len(bands_df)} securities as of {date.today().isoformat()}.")
 
+    cols = ["trade_date", "symbol", "series", "security_name", "band_pct", "remarks", "source"]
+    for c in cols:
+        if c not in bands_df.columns:
+            bands_df[c] = ""
+    bands_df = bands_df[cols]
+
     print("[2/3] Merging and saving updated price bands...")
     if CSV_FILE.exists():
         existing_df = pd.read_csv(CSV_FILE)
+        existing_cols = [c for c in cols if c in existing_df.columns]
+        existing_df = existing_df[existing_cols]
+        for c in cols:
+            if c not in existing_df.columns:
+                existing_df[c] = ""
+        existing_df = existing_df[cols]
         existing_df["band_pct"] = existing_df["band_pct"].astype(str)
         combined = pd.concat([existing_df, bands_df], ignore_index=True)
     else:
@@ -40,6 +52,7 @@ def update():
 
     combined = combined.drop_duplicates(subset=["symbol", "trade_date"], keep="last")
     combined = combined.sort_values(by=["trade_date", "symbol"], ascending=[False, True])
+    combined = combined[cols]
 
     combined.to_csv(CSV_FILE, index=False)
     combined.to_parquet(PARQUET_FILE, index=False)

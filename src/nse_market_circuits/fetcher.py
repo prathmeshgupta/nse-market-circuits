@@ -26,11 +26,16 @@ class MarketCircuitsFetcher:
         rename_map = {
             "SYMBOL": "symbol",
             "SERIES": "series",
+            "SECURITY_NAME": "security_name",
             "BAND": "band_pct",
             "BAND_PERCENT": "band_pct",
-            "LOWER_BAND": "lower_circuit",
-            "UPPER_BAND": "upper_circuit",
+            "REMARKS": "remarks"
         }
         df = df.rename(columns=rename_map)
         df["band_pct"] = df["band_pct"].astype(str)
-        return df
+        df["source"] = "NSE_SEC_LIST"
+        cols = ["symbol", "series", "security_name", "band_pct", "remarks", "source"]
+        for c in cols:
+            if c not in df.columns:
+                df[c] = ""
+        return df[cols]
