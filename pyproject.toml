@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nse-market-circuits"
+version = "0.1.0"
+description = "NSE daily dynamic price bands (circuits) and realistic execution feasibility evaluator"
+authors = [{ name = "Prathmesh Gupta" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pandas>=2.0.0",
+    "pyarrow>=14.0.0",
+    "requests>=2.31.0",
+]
